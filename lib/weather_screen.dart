@@ -1,8 +1,8 @@
+import 'package:clima/Loading_screen.dart';
 import 'package:clima/location_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:http/http.dart';
-import 'dart:convert';
+
 
 class CityScreen extends StatefulWidget {
   @override
@@ -10,20 +10,7 @@ class CityScreen extends StatefulWidget {
 }
 
 class _CityScreenState extends State<CityScreen> {
-  /*void getlocation() async{
-
-  }*/
-Future<Map> weatherinfo() async{
-  Position position = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-  print(position.latitude);
-  print(position.longitude);
-  Response response = await get('https://api.openweathermap.org/data/2.5/weather?lat=${position.latitude}&lon=${position.longitude}&appid=de172246e2e8f73e465ef9d110d83556');
-  Map temp = jsonDecode(response.body);
- // Map tempMap =temp['main'];
- // double tempmax =tempMap['temp_max'];
- // print(tempmax-273);
-  return temp;
-  }
+  final cityname = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -39,31 +26,45 @@ Future<Map> weatherinfo() async{
         child: SafeArea(
           child: Column(
             children: <Widget>[
-              Align(
-                alignment: Alignment.topLeft,
-                child: FlatButton(
-                  onPressed: () {
-                   // getlocation();
-                  },
-//                  child: Icon(
-//                    Icons.arrow_back_ios,
-//                    size: 50.0,
-//                  ),
+              Padding(
+                padding: const EdgeInsets.only(top: 20,left: 10,right: 10),
+                child: Row(
+                    children: <Widget>[
+                      Icon(
+                        Icons.location_city,
+                        size: 50.0,
+                      ),
+                      Flexible(
+                        child: Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: TextField(
+                           style: TextStyle(color: Colors.black),
+                            decoration: InputDecoration(
+                              fillColor: Colors.white,
+                              hintText: "Enter City Name",
+                              hintStyle: TextStyle(color: Colors.grey),
+                              filled: true,
+                              border: OutlineInputBorder(),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.black, width: 1.0),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12.0),
+                                borderSide: BorderSide(color: Colors.white12, width: 5.0),
+                              ),
+                            ),
+                            controller: cityname,
+                            keyboardType: TextInputType.text,
+                          ),
+                        ),
+                      ),
+                    ],
                 ),
-              ),
-              Container(
-                padding: EdgeInsets.all(20.0),
-                child: null,
-              ),
+        ),
               FlatButton(
                 onPressed: () async{
-               //  getlocation();
-                 Map getdata=await weatherinfo();
-                 Navigator.push(
-                      (context),
-                      MaterialPageRoute(
-                          builder: (context) => LocationScreen(
-                              weatherdata: getdata)));
+                  print(cityname.text);
+                 Navigator.push(context, MaterialPageRoute(builder: (context)=> LoadingScreen(cityname.text)));
                 },
                 child: Text(
                   'Get Weather',
@@ -73,10 +74,10 @@ Future<Map> weatherinfo() async{
                   ),
                 ),
               ),
-            ],
+        ],
           ),
+    ),
         ),
-      ),
-    );
+      );
   }
 }
